@@ -1,0 +1,545 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090b12">
+<title>Recall — Learn What Lasts</title>
+<style>
+:root{--bg:#090b12;--panel:#111521;--panel2:#171c2b;--line:#262d40;--text:#f4f5fb;--muted:#9199ae;--accent:#a99aff;--cyan:#82e5dc;--green:#8ee0b1;--red:#ff9eae;--radius:20px}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 85% 0%,#292044 0,transparent 32%),var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,sans-serif;min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.app{max-width:1100px;margin:auto;padding:22px 18px 100px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:8px 0 26px}
+.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:850;letter-spacing:-.8px}
+.logo{width:38px;height:38px;border-radius:13px;background:linear-gradient(135deg,#b9aaff,#7361dc);display:grid;place-items:center;color:#100e20;font-weight:900;font-size:21px}
+.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-weight:750}
+.pill{font-size:12px;border:1px solid var(--line);padding:8px 11px;border-radius:99px;color:var(--muted)}
+h1{font-size:clamp(34px,7vw,56px);line-height:1.03;letter-spacing:-2px;margin:13px 0}
+h1 span{color:var(--accent)}
+h2{font-size:20px;letter-spacing:-.5px;margin:0}
+h3{font-size:16px;margin:0}
+p{line-height:1.6}
+.muted{color:var(--muted)}
+.hero{padding:28px 0 22px}
+.hero p{max-width:550px;color:var(--muted);font-size:15px}
+.layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:16px;margin-top:18px}
+.panel{background:linear-gradient(145deg,rgba(24,29,45,.96),rgba(15,19,30,.97));border:1px solid var(--line);border-radius:var(--radius);padding:20px;min-width:0}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:16px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:750;transition:transform .15s,filter .15s}
+.btn:active{transform:scale(.98)}
+.primary{background:var(--accent);color:#151126}
+.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.small{padding:8px 11px;font-size:12px}
+.full{width:100%}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px 12px}
+.stat strong{display:block;font-size:24px;letter-spacing:-1px;margin-bottom:4px}
+.stat span{font-size:11px;color:var(--muted)}
+.progress{height:6px;background:#282d3d;border-radius:10px;overflow:hidden;margin:13px 0}
+.progress div{height:100%;background:linear-gradient(90deg,var(--accent),var(--cyan));width:0%;transition:width .3s}
+.field{display:block;width:100%;background:#0c101a;border:1px solid var(--line);border-radius:12px;padding:13px;color:var(--text);margin-top:8px}
+textarea.field{min-height:140px;resize:vertical;line-height:1.6}
+label{font-size:12px;color:var(--muted);font-weight:650}
+.source-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.subjects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:16px}
+.subject{background:#111624;border:1px solid var(--line);padding:15px;border-radius:15px;text-align:left;color:var(--text);min-width:0}
+.subject.active{border-color:var(--accent);background:#1c1a30}
+.subject .symbol{font-size:21px;margin-bottom:14px;display:block}
+.subject strong{display:block;margin-bottom:6px}
+.subject small{color:var(--muted);font-size:11px}
+.tag{font-size:10px;color:var(--cyan);letter-spacing:1px;text-transform:uppercase}
+.notice{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px}
+.divider{border:0;border-top:1px solid var(--line);margin:18px 0}
+.hidden{display:none!important}
+.mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.mode{border:1px solid var(--line);background:#101522;border-radius:15px;padding:15px;text-align:left;color:var(--text)}
+.mode .symbol{font-size:22px;display:block;margin-bottom:10px}
+.mode p{font-size:12px;color:var(--muted);margin:6px 0 0}
+#study{margin-top:16px}
+.study-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.question{font-size:clamp(20px,4vw,28px);line-height:1.4;letter-spacing:-.5px;margin:20px 0}
+.answer-box{width:100%;min-height:120px;background:#0c101a;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px;resize:vertical}
+.option{display:block;width:100%;text-align:left;padding:14px;border:1px solid var(--line);border-radius:12px;background:#101522;color:var(--text);margin:9px 0;line-height:1.45}
+.option.selected{border-color:var(--accent);background:#28233f}
+.option.correct{border-color:var(--green);background:#15291f}
+.option.wrong{border-color:var(--red);background:#301b26}
+.feedback{padding:14px;border-radius:12px;background:#171c2b;margin:14px 0;font-size:13px;line-height:1.6}
+.good{color:var(--green)}.bad{color:var(--red)}
+.empty{padding:20px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:14px;font-size:13px;line-height:1.7}
+.list-item{padding:14px 0;border-bottom:1px solid var(--line)}
+.list-item:last-child{border-bottom:0}
+.list-item p{font-size:13px;margin:7px 0}
+footer{margin-top:35px;text-align:center;color:var(--muted);font-size:11px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#f1edff;color:#171226;border-radius:12px;padding:12px 16px;font-size:13px;font-weight:700;box-shadow:0 10px 35px #0008;z-index:10;max-width:90%;text-align:center}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.app{padding:16px 13px 80px}.panel{padding:17px}.hero{padding-top:18px}.stats{gap:7px}.stat{padding:12px 9px}.stat strong{font-size:21px}.pill{font-size:10px}.subjects{gap:8px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><div class="logo">R</div> recall<span style="color:var(--accent)">.</span></div>
+  <div class="pill">DAY 01 · BUILDING IN PUBLIC</div>
+</header>
+
+<section class="hero">
+  <div class="eyebrow">Your personal learning space</div>
+  <h1>Learn less passively.<br><span>Remember more.</span></h1>
+  <p>Bring your own study material. Practise retrieving it from memory, test your understanding, and revisit the concepts you find difficult.</p>
+  <div class="stats">
+    <div class="stat"><strong id="stat-sessions">0</strong><span>Sessions completed</span></div>
+    <div class="stat"><strong id="stat-accuracy">—</strong><span>Quiz accuracy</span></div>
+    <div class="stat"><strong id="stat-streak">0</strong><span>Study days</span></div>
+  </div>
+</section>
+
+<div class="layout">
+<main>
+  <section class="panel">
+    <div class="section-head"><div><div class="eyebrow">Step 01</div><h2 style="margin-top:5px">Your source material</h2></div><span class="tag">SOURCE FIRST</span></div>
+    <label for="source-title">Material title</label>
+    <input id="source-title" class="field" maxlength="100" placeholder="e.g. History — Chapter 3">
+    <label for="source-text" style="display:block;margin-top:15px">Paste your notes or textbook extract</label>
+    <textarea id="source-text" class="field" placeholder="Paste the information you want to learn here. The app will use your text to create practice prompts."></textarea>
+    <div class="source-actions">
+      <button class="btn primary" id="save-source">Save material</button>
+      <button class="btn secondary" id="load-demo">Try sample</button>
+      <label class="btn secondary" for="file-input" style="cursor:pointer">Import .txt</label>
+      <input id="file-input" type="file" accept=".txt,text/plain" class="hidden">
+    </div>
+    <p class="notice">Day 1 works locally in your browser. Text is not uploaded to a server. PDF parsing and AI-generated questions from your material will be added in later versions.</p>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><div><div class="eyebrow">Step 02</div><h2 style="margin-top:5px">Choose how to learn</h2></div></div>
+    <div class="mode-grid">
+      <button class="mode" data-mode="recall"><span class="symbol">↗</span><strong>Active recall</strong><p>Answer a prompt without looking at your source.</p></button>
+      <button class="mode" data-mode="quiz"><span class="symbol">◇</span><strong>Quick quiz</strong><p>Test yourself using questions from your saved material.</p></button>
+      <button class="mode" data-mode="review"><span class="symbol">⟳</span><strong>Review mistakes</strong><p>Retry questions you previously answered incorrectly.</p></button>
+      <button class="mode" data-mode="read"><span class="symbol">▤</span><strong>Study source</strong><p>Read your saved material before practising.</p></button>
+    </div>
+    <div id="study" class="hidden">
+      <hr class="divider">
+      <div class="study-top"><span id="mode-label" class="tag">ACTIVE RECALL</span><span id="question-count" class="muted" style="font-size:12px"></span></div>
+      <div class="progress"><div id="session-progress"></div></div>
+      <div id="question-area"></div>
+      <div id="answer-area"></div>
+      <div id="feedback" aria-live="polite"></div>
+      <div class="source-actions" id="study-actions"></div>
+    </div>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><div><div class="eyebrow">Step 03</div><h2 style="margin-top:5px">Your study material</h2></div></div>
+    <div id="source-summary" class="empty">No material saved yet. Paste a source above or try the sample to begin.</div>
+  </section>
+</main>
+
+<aside>
+  <section class="panel">
+    <div class="section-head"><div><div class="eyebrow">Your library</div><h2 style="margin-top:5px">Subjects</h2></div></div>
+    <div id="subjects" class="subjects"></div>
+    <button id="add-subject" class="btn secondary full" style="margin-top:12px">+ Add subject</button>
+    <p class="notice">Subjects organize your materials. Add a subject and select it before saving a source.</p>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="eyebrow">Daily target</div>
+    <div style="display:flex;align-items:center;gap:16px;margin-top:17px">
+      <svg width="84" height="84" viewBox="0 0 100 100" aria-label="Daily goal progress">
+        <circle cx="50" cy="50" r="40" stroke="#292e40" stroke-width="8" fill="none"/>
+        <circle id="goal-ring" cx="50" cy="50" r="40" stroke="#a99aff" stroke-width="8" stroke-linecap="round" fill="none" stroke-dasharray="251.3" stroke-dashoffset="251.3" transform="rotate(-90 50 50)"/>
+        <text id="goal-number" x="50" y="55" fill="#f4f5fb" font-size="21" font-weight="750" text-anchor="middle">0/3</text>
+      </svg>
+      <div><strong id="goal-heading">Start small.</strong><p class="muted" style="font-size:12px;margin:5px 0">Complete 3 practice sessions today.</p></div>
+    </div>
+    <div class="progress"><div id="daily-bar"></div></div>
+    <p class="notice">Short, focused sessions can make practice easier to sustain. The target is adjustable in future versions.</p>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><div><div class="eyebrow">Your weak spots</div><h2 style="margin-top:5px">Mistake review</h2></div></div>
+    <div id="mistakes" class="empty">Incorrect quiz answers will appear here for another attempt.</div>
+    <button id="review-button" class="btn secondary full" style="margin-top:12px">Review mistakes</button>
+  </section>
+
+  <section class="panel" style="margin-top:16px">
+    <div class="section-head"><div><div class="eyebrow">Your data</div><h2 style="margin-top:5px">Keep your progress</h2></div></div>
+    <p class="notice">Progress is saved in this browser on this device. Clearing site data may erase it.</p>
+    <button id="export-data" class="btn secondary full">Export backup</button>
+    <button id="reset-data" class="btn secondary full" style="margin-top:9px">Reset all progress</button>
+  </section>
+</aside>
+</div>
+
+<footer>RECALL · DAY 01 PROTOTYPE<br>Built for understanding, retrieval and lasting learning.</footer>
+</div>
+<div id="toast" class="hidden" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const TODAY=()=>new Date().toLocaleDateString("en-CA");
+const STORAGE="recall_day1_v1";
+const DEMO_TITLE="Memory and learning — sample";
+const DEMO_TEXT="Active recall is a learning technique in which a learner retrieves information from memory instead of simply rereading it. Spaced repetition means revisiting information across increasing intervals of time. Feedback helps learners identify errors and correct misunderstandings. Interleaving means mixing different but related types of problems during practice. Recognition is not the same as recall: recognizing an answer among options can be easier than producing it independently. A correct answer today does not guarantee long-term retention, so delayed review is useful.";
+
+const defaultState=()=>({
+subjects:[{id:"general",name:"General",icon:"✦"}],
+activeSubject:"general",
+sources:[],
+activeSource:null,
+sessions:0,
+quizCorrect:0,
+quizTotal:0,
+studyDays:[],
+daily:{date:TODAY(),count:0},
+mistakes:[],
+attempts:{},
+lastResults:[],
+});
+
+let state=defaultState();
+let currentSession=null;
+let selectedOption=null;
+let toastTimer=null;
+
+function safeText(v){return String(v??"");}
+function escapeHTML(s){return safeText(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function id(){return "x"+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+function toast(message){
+  $("toast").textContent=message;
+  $("toast").classList.remove("hidden");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2600);
+}
+function persist(){
+  try{localStorage.setItem(STORAGE,JSON.stringify(state));}
+  catch(e){toast("Browser storage is full. Export a backup or shorten your material.");}
+}
+function load(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(STORAGE)||"null");
+    if(saved&&Array.isArray(saved.subjects)&&Array.isArray(saved.sources)){
+      state={...defaultState(),...saved};
+      if(!Array.isArray(state.mistakes))state.mistakes=[];
+      if(!state.attempts||typeof state.attempts!=="object")state.attempts={};
+      if(!Array.isArray(state.studyDays))state.studyDays=[];
+      if(!state.daily||state.daily.date!==TODAY())state.daily={date:TODAY(),count:0};
+      if(!state.subjects.some(s=>s.id===state.activeSubject))state.activeSubject=state.subjects[0]?.id||"general";
+    }
+  }catch(e){state=defaultState();}
+}
+function activeSource(){return state.sources.find(s=>s.id===state.activeSource)||null;}
+function activeSubject(){return state.subjects.find(s=>s.id===state.activeSubject)||state.subjects[0];}
+function words(text){return text.trim().split(/\s+/).filter(Boolean).length;}
+function render(){
+  renderSubjects();renderSummary();renderStats();renderGoal();renderMistakes();
+}
+function renderSubjects(){
+  $("subjects").innerHTML=state.subjects.map(s=>`
+    <button class="subject ${s.id===state.activeSubject?"active":""}" data-subject="${escapeHTML(s.id)}">
+      <span class="symbol">${escapeHTML(s.icon||"✦")}</span>
+      <strong>${escapeHTML(s.name)}</strong>
+      <small>${state.sources.filter(x=>x.subjectId===s.id).length} materials</small>
+    </button>`).join("");
+}
+function renderSummary(){
+  const src=activeSource();
+  if(!state.sources.length){
+    $("source-summary").className="empty";
+    $("source-summary").textContent="No material saved yet. Paste a source above or try the sample to begin.";
+    return;
+  }
+  $("source-summary").className="";
+  $("source-summary").innerHTML=state.sources.map(s=>`
+    <div class="list-item">
+      <div class="section-head" style="margin-bottom:7px">
+        <strong>${escapeHTML(s.title)}</strong>
+        <button class="btn secondary small" data-open-source="${escapeHTML(s.id)}">Open</button>
+      </div>
+      <p class="muted">${escapeHTML(state.subjects.find(x=>x.id===s.subjectId)?.name||"General")} · ${words(s.text)} words</p>
+      ${src&&src.id===s.id?'<span class="tag">CURRENT SOURCE</span>':""}
+    </div>`).join("");
+}
+function renderStats(){
+  $("stat-sessions").textContent=state.sessions;
+  $("stat-accuracy").textContent=state.quizTotal?Math.round(state.quizCorrect/state.quizTotal*100)+"%":"—";
+  $("stat-streak").textContent=state.studyDays.length;
+}
+function renderGoal(){
+  const n=Math.min(state.daily.count,3),pct=n/3;
+  $("goal-number").textContent=n+"/3";
+  $("goal-ring").style.strokeDashoffset=251.3*(1-pct);
+  $("daily-bar").style.width=(pct*100)+"%";
+  $("goal-heading").textContent=n===3?"Daily goal reached!":n===0?"Start small.":"Keep going.";
+}
+function renderMistakes(){
+  const unique=[...new Map(state.mistakes.map(m=>[m.key,m])).values()];
+  if(!unique.length){
+    $("mistakes").className="empty";
+    $("mistakes").textContent="Incorrect quiz answers will appear here for another attempt.";
+    return;
+  }
+  $("mistakes").className="";
+  $("mistakes").innerHTML=unique.slice(-5).reverse().map(m=>`
+    <div class="list-item">
+      <strong style="font-size:13px">${escapeHTML(m.prompt)}</strong>
+      <p class="muted">${escapeHTML(m.sourceTitle)}</p>
+      <button class="btn secondary small" data-retry="${escapeHTML(m.key)}">Retry</button>
+    </div>`).join("");
+}
+function saveSource(){
+  const title=$("source-title").value.trim()||"Untitled material";
+  const text=$("source-text").value.trim();
+  if(!text){toast("Paste some source material first.");return;}
+  if(words(text)<8){toast("Add a little more source material to make useful practice prompts.");return;}
+  let src=activeSource();
+  if(src&&src.subjectId===state.activeSubject){
+    src.title=title;src.text=text;src.updatedAt=Date.now();
+  }else{
+    src={id:id(),title,text,subjectId:state.activeSubject,updatedAt:Date.now()};
+    state.sources.push(src);
+  }
+  state.activeSource=src.id;
+  persist();render();toast("Source saved on this device.");
+}
+function openSource(sourceId){
+  const src=state.sources.find(s=>s.id===sourceId);
+  if(!src)return;
+  state.activeSource=src.id;state.activeSubject=src.subjectId;
+  $("source-title").value=src.title;$("source-text").value=src.text;
+  persist();render();toast("Source loaded.");
+}
+function sample(){
+  $("source-title").value=DEMO_TITLE;$("source-text").value=DEMO_TEXT;
+  toast("Sample loaded. Save it to begin.");
+}
+function addSubject(){
+  const name=prompt("Enter a subject name:");
+  if(!name||!name.trim())return;
+  const cleaned=name.trim().slice(0,50);
+  if(state.subjects.some(s=>s.name.toLowerCase()===cleaned.toLowerCase())){
+    toast("That subject already exists.");return;
+  }
+  const icons=["✦","◈","⌘","◇","△","◎","✧"];
+  const s={id:id(),name:cleaned,icon:icons[state.subjects.length%icons.length]};
+  state.subjects.push(s);state.activeSubject=s.id;
+  state.activeSource=null;
+  $("source-title").value="";$("source-text").value="";
+  persist();render();toast("Subject added.");
+}
+function sentences(text){
+  return text.replace(/\s+/g," ").match(/[^.!?]+[.!?]?/g)?.map(s=>s.trim()).filter(s=>words(s)>=5)||[];
+}
+function makePrompts(src){
+  const lines=sentences(src.text);
+  return lines.map((sentence,i)=>({id:src.id+"_"+i,sourceId:src.id,sourceTitle:src.title,prompt:"Explain this idea in your own words: "+sentence,answer:sentence,kind:"recall"}));
+}
+function makeQuiz(src){
+  const lines=sentences(src.text);
+  if(lines.length<2)return [];
+  return lines.map((sentence,i)=>{
+    const other=lines.filter((_,j)=>j!==i).sort(()=>Math.random()-.5).slice(0,3);
+    const options=[sentence,...other].sort(()=>Math.random()-.5);
+    return {id:src.id+"_q_"+i,sourceId:src.id,sourceTitle:src.title,prompt:"Which statement matches the source?",answer:sentence,options,kind:"quiz"};
+  });
+}
+function startSession(mode,onlyKey){
+  const src=activeSource();
+  if(mode!=="review"&&!src){toast("Save a source first.");$("source-title").focus();return;}
+  let questions=[];
+  if(mode==="recall")questions=makePrompts(src);
+  if(mode==="quiz")questions=makeQuiz(src);
+  if(mode==="review"){
+    const mistakes=[...new Map(state.mistakes.map(m=>[m.key,m])).values()];
+    questions=mistakes.map(m=>({id:m.key,sourceId:m.sourceId,sourceTitle:m.sourceTitle,prompt:m.prompt,answer:m.answer,options:m.options||[],kind:m.options?.length?"quiz":"recall",key:m.key}));
+    if(onlyKey)questions=questions.filter(q=>q.key===onlyKey);
+  }
+  if(mode==="read"){
+    if(!src){toast("Save a source first.");return;}
+    currentSession={mode:"read",source:src};
+    $("study").classList.remove("hidden");
+    $("mode-label").textContent="STUDY SOURCE";
+    $("question-count").textContent=words(src.text)+" words";
+    $("session-progress").style.width="100%";
+    $("question-area").innerHTML=`<h3>${escapeHTML(src.title)}</h3><p style="white-space:pre-wrap;line-height:1.85">${escapeHTML(src.text)}</p><p class="notice">This is your saved source, not an AI-generated summary. Use active recall or a quiz afterwards to test what you remember.</p>`;
+    $("answer-area").innerHTML="";$("feedback").innerHTML="";
+    $("study-actions").innerHTML='<button class="btn primary" data-next-mode="recall">Practise recall</button><button class="btn secondary" data-next-mode="quiz">Take a quiz</button>';
+    $("study").scrollIntoView({behavior:"smooth",block:"start"});
+    return;
+  }
+  if(!questions.length){toast(mode==="review"?"No mistakes to review yet.":"Add more complete sentences to your source first.");return;}
+  currentSession={mode,questions,index:0,correct:0,answered:0,reviewKeys:[]};
+  selectedOption=null;
+  $("study").classList.remove("hidden");
+  $("mode-label").textContent=mode==="recall"?"ACTIVE RECALL":mode==="quiz"?"QUICK QUIZ":"MISTAKE REVIEW";
+  renderQuestion();
+  $("study").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderQuestion(){
+  const s=currentSession;
+  if(!s||s.mode==="read")return;
+  const q=s.questions[s.index];
+  if(!q){finishSession();return;}
+  selectedOption=null;
+  $("question-count").textContent=(s.index+1)+" / "+s.questions.length;
+  $("session-progress").style.width=(s.index/s.questions.length*100)+"%";
+  $("question-area").innerHTML=`<div class="eyebrow">Question ${s.index+1}</div><div class="question">${escapeHTML(q.prompt)}</div>`;
+  $("feedback").innerHTML="";
+  if(q.kind==="quiz"&&q.options.length){
+    $("answer-area").innerHTML=q.options.map((opt,i)=>`<button class="option" data-option="${i}">${String.fromCharCode(65+i)}. ${escapeHTML(opt)}</button>`).join("");
+    $("study-actions").innerHTML='<button class="btn primary" id="check-answer" disabled>Check answer</button>';
+  }else{
+    $("answer-area").innerHTML=`<label for="recall-answer">Write what you remember before revealing the source answer.</label><textarea id="recall-answer" class="answer-box" placeholder="Explain the idea in your own words..."></textarea>`;
+    $("study-actions").innerHTML='<button class="btn primary" id="reveal-answer">Reveal source answer</button>';
+  }
+}
+function recordStudyDay(){
+  const date=TODAY();
+  if(!state.studyDays.includes(date))state.studyDays.push(date);
+  if(state.daily.date!==date)state.daily={date,count:0};
+  state.daily.count++;
+  state.sessions++;
+}
+function checkQuiz(){
+  const s=currentSession,q=s?.questions[s.index];
+  if(!q||selectedOption===null)return;
+  const chosen=q.options[selectedOption],correct=chosen===q.answer;
+  s.answered++;
+  if(correct)s.correct++;
+  if(q.kind==="quiz"){
+    state.quizTotal++;
+    if(correct)state.quizCorrect++;
+  }
+  const key=q.key||q.id;
+  state.attempts[key]=(state.attempts[key]||0)+1;
+  if(!correct){
+    state.mistakes.push({key,sourceId:q.sourceId,sourceTitle:q.sourceTitle,prompt:q.prompt,answer:q.answer,options:q.options||[]});
+  }else if(q.key){
+    state.mistakes=state.mistakes.filter(m=>m.key!==q.key);
+  }
+  persist();renderStats();renderMistakes();
+  document.querySelectorAll("[data-option]").forEach(btn=>{
+    const index=Number(btn.dataset.option);
+    btn.disabled=true;
+    if(q.options[index]===q.answer)btn.classList.add("correct");
+    else if(index===selectedOption)btn.classList.add("wrong");
+  });
+  $("feedback").innerHTML=`<div class="feedback"><strong class="${correct?"good":"bad"}">${correct?"Correct.":"Not quite."}</strong><p>${correct?"Good retrieval.":"Read the source answer, then try again during review."}</p><strong>Source answer</strong><p>${escapeHTML(q.answer)}</p><span class="muted">Compare the statement with the source. This prototype uses exact sentence matching.</span></div>`;
+  $("study-actions").innerHTML='<button class="btn primary" id="next-question">Continue</button>';
+}
+function revealAnswer(){
+  const s=currentSession,q=s?.questions[s.index];
+  if(!q)return;
+  const response=$("recall-answer").value.trim();
+  if(!response){toast("Write your best attempt first.");$("recall-answer").focus();return;}
+  s.answered++;
+  $("feedback").innerHTML=`<div class="feedback"><strong>Compare your recall</strong><p>Your response: ${escapeHTML(response)}</p><hr class="divider"><strong>What the source says</strong><p>${escapeHTML(q.answer)}</p><p class="notice">Be honest about what you missed. This prototype does not automatically grade free-text answers.</p></div>`;
+  $("study-actions").innerHTML='<button class="btn primary" id="mark-recalled">I recalled it well</button><button class="btn secondary" id="mark-again">I need to review this</button>';
+}
+function markRecall(good){
+  const s=currentSession,q=s?.questions[s.index];
+  if(!q)return;
+  if(good)s.correct++;
+  else state.mistakes.push({key:q.key||q.id,sourceId:q.sourceId,sourceTitle:q.sourceTitle,prompt:q.prompt,answer:q.answer,options:[]});
+  state.attempts[q.key||q.id]=(state.attempts[q.key||q.id]||0)+1;
+  persist();renderMistakes();
+  advance();
+}
+function advance(){
+  if(!currentSession)return;
+  currentSession.index++;
+  if(currentSession.index>=currentSession.questions.length){finishSession();return;}
+  renderQuestion();
+}
+function finishSession(){
+  const s=currentSession;
+  if(!s)return;
+  recordStudyDay();
+  const total=s.questions.length,correct=s.correct;
+  $("mode-label").textContent="SESSION COMPLETE";
+  $("question-count").textContent=total+" prompts";
+  $("session-progress").style.width="100%";
+  $("question-area").innerHTML=`<div style="font-size:35px;margin:20px 0">✦</div><h2>Practice complete.</h2><p class="muted">You worked through ${total} prompts.</p><div class="stats"><div class="stat"><strong>${correct}</strong><span>Marked recalled / correct</span></div><div class="stat"><strong>${total}</strong><span>Prompts attempted</span></div><div class="stat"><strong>${Math.round(correct/Math.max(1,total)*100)}%</strong><span>Session score</span></div></div><p class="notice">A single session score is not a measure of long-term retention. Return later and try recalling the material again without looking.</p>`;
+  $("answer-area").innerHTML="";
+  $("feedback").innerHTML="";
+  $("study-actions").innerHTML='<button class="btn primary" id="finish-done">Back to dashboard</button><button class="btn secondary" id="finish-review">Review mistakes</button>';
+  currentSession=null;persist();render();
+}
+function retryMistake(key){
+  startSession("review",key);
+}
+function exportBackup(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download="recall-backup-"+TODAY()+".json";a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Backup export started.");
+}
+function reset(){
+  if(!confirm("Delete all saved subjects, sources and progress from this browser? Export a backup first if needed."))return;
+  localStorage.removeItem(STORAGE);state=defaultState();currentSession=null;
+  $("source-title").value="";$("source-text").value="";
+  $("study").classList.add("hidden");persist();render();toast("Local data reset.");
+}
+document.addEventListener("click",e=>{
+  const subject=e.target.closest("[data-subject]");
+  if(subject){
+    state.activeSubject=subject.dataset.subject;state.activeSource=null;
+    $("source-title").value="";$("source-text").value="";
+    persist();render();return;
+  }
+  const open=e.target.closest("[data-open-source]");
+  if(open){openSource(open.dataset.openSource);return;}
+  const mode=e.target.closest("[data-mode]");
+  if(mode){startSession(mode.dataset.mode);return;}
+  const opt=e.target.closest("[data-option]");
+  if(opt&&!opt.disabled){
+    selectedOption=Number(opt.dataset.option);
+    document.querySelectorAll("[data-option]").forEach(b=>b.classList.toggle("selected",b===opt));
+    const check=$("check-answer");if(check)check.disabled=false;
+    return;
+  }
+  const retry=e.target.closest("[data-retry]");
+  if(retry){retryMistake(retry.dataset.retry);return;}
+  const nextMode=e.target.closest("[data-next-mode]");
+  if(nextMode){startSession(nextMode.dataset.nextMode);return;}
+  if(e.target.closest("#check-answer")){checkQuiz();return;}
+  if(e.target.closest("#reveal-answer")){revealAnswer();return;}
+  if(e.target.closest("#next-question")){advance();return;}
+  if(e.target.closest("#mark-recalled")){markRecall(true);return;}
+  if(e.target.closest("#mark-again")){markRecall(false);return;}
+  if(e.target.closest("#finish-done")){
+    $("study").classList.add("hidden");window.scrollTo({top:0,behavior:"smooth"});return;
+  }
+  if(e.target.closest("#finish-review")){startSession("review");return;}
+});
+$("save-source").addEventListener("click",saveSource);
+$("load-demo").addEventListener("click",sample);
+$("add-subject").addEventListener("click",addSubject);
+$("review-button").addEventListener("click",()=>startSession("review"));
+$("export-data").addEventListener("click",exportBackup);
+$("reset-data").addEventListener("click",reset);
+$("file-input").addEventListener("change",async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  if(file.size>2*1024*1024){toast("For this prototype, text files must be under 2 MB.");e.target.value="";return;}
+  try{$("source-text").value=await file.text();if(!$("source-title").value)$("source-title").value=file.name.replace(/\.txt$/i,"");toast("Text imported. Save the source to continue.");}
+  catch(err){toast("Could not read that file.");}
+  e.target.value="";
+});
+load();render();
+if(state.activeSource){
+  const src=activeSource();
+  if(src){$("source-title").value=src.title;$("source-text").value=src.text;}
+}
+})();
+</script>
+</body>
+</html>
